@@ -1,12 +1,14 @@
 package sportapp.services;
 
+import sportapp.data.Game;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class ScoreboardService implements ScoreboardOperations {
 
-    private final List<Object> games;
+    private final List<Game> games;
 
     public ScoreboardService() {
         games = new ArrayList<>();
@@ -14,7 +16,13 @@ public class ScoreboardService implements ScoreboardOperations {
 
     @Override
     public UUID startGame(String homeTeamName, String awayTeamName) {
-        return null;
+        Game game = new Game(homeTeamName, awayTeamName);
+        Game swappedGame = new Game(awayTeamName, homeTeamName);
+        if (games.contains(game) || games.contains(swappedGame)) {
+            throw new IllegalStateException("Game already exists in scoreboard!");
+        }
+        games.add(game);
+        return game.getUuid();
     }
 
     @Override
@@ -33,5 +41,9 @@ public class ScoreboardService implements ScoreboardOperations {
     @Override
     public List<Object> getSummaryByTotalScore() {
         return null;
+    }
+
+    public List<Game> getGames() {
+        return games;
     }
 }

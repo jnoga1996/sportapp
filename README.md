@@ -25,3 +25,7 @@ The summary would provide with the following information:
 - Mexico 0 - Canada 5
 - Argentina 3 - Australia 1
 - Germany 2 - France 2
+
+## Assumptions
+1. Duplicated matches with swapped home and away team are treated as the same game, for example game between POL and GER is the same as game between GER and POL.
+2. Score must be a natural number greater or equal to zero.
