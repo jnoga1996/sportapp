@@ -81,9 +81,13 @@ public class ScoreboardServiceTest {
 
     @Test
     void updateScoreShouldUpdateScoreForProvidedUUID() {
-        var uuid = UUID.randomUUID();
+        var uuid = scoreboardService.startGame("POL", "GER");
 
         scoreboardService.updateScore(uuid, 1, 0);
+        var updatedGame = scoreboardService.getGames().stream().filter(game -> game.getUuid().equals(uuid)).findFirst().orElseThrow();
+
+        Assertions.assertEquals(1, updatedGame.getHomeTeamScore());
+        Assertions.assertEquals(0, updatedGame.getAwayTeamScore());
     }
 
     @Test
@@ -95,8 +99,8 @@ public class ScoreboardServiceTest {
 
     private void assertThatGamesHaveDefaultScoreValue(List<Game> games) {
         games.forEach(game -> {
-            Assertions.assertEquals(DEFAULT_SCORE, game.getHomeTeam().score());
-            Assertions.assertEquals(DEFAULT_SCORE, game.getAwayTeam().score());
+            Assertions.assertEquals(DEFAULT_SCORE, game.getHomeTeamScore());
+            Assertions.assertEquals(DEFAULT_SCORE, game.getAwayTeamScore());
         });
     }
 }

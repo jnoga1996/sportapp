@@ -34,10 +34,11 @@ public class ScoreboardService implements ScoreboardOperations {
 
     @Override
     public void updateScore(UUID gameUUID, Integer homeTeamScore, Integer awayTeamScore) {
-        var game = games.stream()
+        var gameToUpdate = games.stream()
+                .filter(game -> game.getUuid().equals(gameUUID))
                 .findFirst()
                 .orElseThrow();
-        //game.updateScore(homeTeamScore, awayTeamScore);
+        gameToUpdate.updateScore(homeTeamScore, awayTeamScore);
     }
 
     @Override
