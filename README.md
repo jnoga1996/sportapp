@@ -29,3 +29,6 @@ The summary would provide with the following information:
 ## Assumptions
 1. Duplicated matches with swapped home and away team are treated as the same game, for example game between POL and GER is the same as game between GER and POL.
 2. Score must be a natural number greater or equal to zero.
+
+## Other
+I have added Git Action which builds project with Java 21 and Gradle, it can be accessed here https://github.com/jnoga1996/sportapp/actions/workflows/gradle.yml
