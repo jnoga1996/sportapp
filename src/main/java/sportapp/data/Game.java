@@ -35,6 +35,14 @@ public class Game {
         return homeTeamScore;
     }
 
+    public String getAwayTeamName() {
+        return awayTeamName;
+    }
+
+    public String getHomeTeamName() {
+        return homeTeamName;
+    }
+
     public void setAwayTeamScore(Integer awayTeamScore) {
         this.awayTeamScore = awayTeamScore;
     }

@@ -112,9 +112,42 @@ public class ScoreboardServiceTest {
 
     @Test
     void getSummaryByTotalScoreShouldReturnListOfGames() {
+        var uuid = scoreboardService.startGame("MEX", "CAN");
+        scoreboardService.updateScore(uuid, 0, 5);
+        var uuid2 = scoreboardService.startGame("SPA", "BRA");
+        scoreboardService.updateScore(uuid2, 10, 2);
+        var uuid3 = scoreboardService.startGame("GER", "FRA");
+        scoreboardService.updateScore(uuid3, 2, 2);
+        var uuid4 = scoreboardService.startGame("URU", "ITA");
+        scoreboardService.updateScore(uuid4, 6, 6);
+        var uuid5 = scoreboardService.startGame("ARG", "AUS");
+        scoreboardService.updateScore(uuid5, 3, 1);
+
         var summary = scoreboardService.getSummaryByTotalScore();
 
         Assertions.assertNotNull(summary);
+        assertThatGameHaveCorrectValues(summary.get(0), "URU", 6, "ITA", 6);
+        assertThatGameHaveCorrectValues(summary.get(1), "SPA", 10, "BRA", 2);
+        assertThatGameHaveCorrectValues(summary.get(2), "MEX", 0, "CAN", 5);
+        assertThatGameHaveCorrectValues(summary.get(3), "ARG", 3, "AUS", 1);
+        assertThatGameHaveCorrectValues(summary.get(4), "GER", 2, "FRA", 2);
+    }
+
+    @Test
+    void getSummaryByTotalScoreShouldReturnListOfGamesSortedByDateOfCreation() {
+        var uuid = scoreboardService.startGame("MEX", "CAN");
+        scoreboardService.updateScore(uuid, 7, 5);
+        var uuid2 = scoreboardService.startGame("SPA", "BRA");
+        scoreboardService.updateScore(uuid2, 10, 2);
+        var uuid3 = scoreboardService.startGame("GER", "FRA");
+        scoreboardService.updateScore(uuid3, 6, 6);
+
+        var summary = scoreboardService.getSummaryByTotalScore();
+
+        Assertions.assertNotNull(summary);
+        assertThatGameHaveCorrectValues(summary.get(0), "GER", 6, "FRA", 6);
+        assertThatGameHaveCorrectValues(summary.get(1), "SPA", 10, "BRA", 2);
+        assertThatGameHaveCorrectValues(summary.get(2), "MEX", 7, "CAN", 5);
     }
 
     private void assertThatGamesHaveDefaultScoreValue(List<Game> games) {
@@ -126,5 +159,12 @@ public class ScoreboardServiceTest {
 
     private Game getGameByUUID(UUID uuid) {
         return scoreboardService.getGames().stream().filter(game -> game.getUuid().equals(uuid)).findFirst().orElseThrow();
+    }
+
+    private void assertThatGameHaveCorrectValues(Game game, String homeTeamName, Integer homeTeamScore, String awayTeamName, Integer awayTeamScore) {
+        Assertions.assertEquals(homeTeamName, game.getHomeTeamName());
+        Assertions.assertEquals(homeTeamScore, game.getHomeTeamScore());
+        Assertions.assertEquals(awayTeamName, game.getAwayTeamName());
+        Assertions.assertEquals(awayTeamScore, game.getAwayTeamScore());
     }
 }

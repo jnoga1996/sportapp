@@ -2,9 +2,7 @@ package sportapp.services;
 
 import sportapp.data.Game;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ScoreboardService implements ScoreboardOperations {
 
@@ -41,8 +39,11 @@ public class ScoreboardService implements ScoreboardOperations {
     }
 
     @Override
-    public List<Object> getSummaryByTotalScore() {
-        return null;
+    public List<Game> getSummaryByTotalScore() {
+        return games.stream()
+                .sorted(Comparator.comparingInt(g -> g.getAwayTeamScore() + g.getHomeTeamScore()))
+                .toList()
+                .reversed();
     }
 
     public List<Game> getGames() {

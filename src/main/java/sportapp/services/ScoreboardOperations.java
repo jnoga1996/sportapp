@@ -1,5 +1,7 @@
 package sportapp.services;
 
+import sportapp.data.Game;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +13,5 @@ public interface ScoreboardOperations {
 
     void updateScore(UUID gameUUID, Integer homeTeamScore, Integer awayTeamScore);
 
-    // TODO method should return collection of Games, will change definition after data structure is ready
-    List<Object> getSummaryByTotalScore();
+    List<Game> getSummaryByTotalScore();
 }
