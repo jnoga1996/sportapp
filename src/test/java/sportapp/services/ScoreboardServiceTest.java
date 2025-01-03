@@ -3,14 +3,13 @@ package sportapp.services;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sportapp.data.Game;
 
-import java.util.List;
 import java.util.UUID;
+
+import static sportapp.util.TestUtils.*;
 
 public class ScoreboardServiceTest {
 
-    private final static Integer DEFAULT_SCORE = 0;
     private ScoreboardService scoreboardService;
 
     @BeforeEach
@@ -82,15 +81,16 @@ public class ScoreboardServiceTest {
     @Test
     void updateScoreShouldUpdateScoreForProvidedUUID() {
         var uuid = scoreboardService.startGame("POL", "GER");
+        var games = scoreboardService.getGames();
 
         scoreboardService.updateScore(uuid, 1, 0);
-        var updatedGame = getGameByUUID(uuid);
+        var updatedGame = getGameByUUID(games, uuid);
 
         Assertions.assertEquals(1, updatedGame.getHomeTeamScore());
         Assertions.assertEquals(0, updatedGame.getAwayTeamScore());
 
         scoreboardService.updateScore(uuid, 1, 1);
-        updatedGame = getGameByUUID(uuid);
+        updatedGame = getGameByUUID(games, uuid);
 
         Assertions.assertEquals(1, updatedGame.getHomeTeamScore());
         Assertions.assertEquals(1, updatedGame.getAwayTeamScore());
@@ -105,7 +105,8 @@ public class ScoreboardServiceTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> scoreboardService.updateScore(uuid, null, 0),
                 "Score can't be a negative number!");
 
-        var game = getGameByUUID(uuid);
+        var games = scoreboardService.getGames();
+        var game = getGameByUUID(games, uuid);
         Assertions.assertEquals(0, game.getHomeTeamScore());
         Assertions.assertEquals(0, game.getAwayTeamScore());
     }
@@ -150,21 +151,5 @@ public class ScoreboardServiceTest {
         assertThatGameHaveCorrectValues(summary.get(2), "MEX", 7, "CAN", 5);
     }
 
-    private void assertThatGamesHaveDefaultScoreValue(List<Game> games) {
-        games.forEach(game -> {
-            Assertions.assertEquals(DEFAULT_SCORE, game.getHomeTeamScore());
-            Assertions.assertEquals(DEFAULT_SCORE, game.getAwayTeamScore());
-        });
-    }
 
-    private Game getGameByUUID(UUID uuid) {
-        return scoreboardService.getGames().stream().filter(game -> game.getUuid().equals(uuid)).findFirst().orElseThrow();
-    }
-
-    private void assertThatGameHaveCorrectValues(Game game, String homeTeamName, Integer homeTeamScore, String awayTeamName, Integer awayTeamScore) {
-        Assertions.assertEquals(homeTeamName, game.getHomeTeamName());
-        Assertions.assertEquals(homeTeamScore, game.getHomeTeamScore());
-        Assertions.assertEquals(awayTeamName, game.getAwayTeamName());
-        Assertions.assertEquals(awayTeamScore, game.getAwayTeamScore());
-    }
 }

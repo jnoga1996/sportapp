@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class Game {
 
-    private final static Integer DEFAULT_SCORE = 0;
+    public final static Integer DEFAULT_SCORE = 0;
 
     private final UUID uuid;
     private final String homeTeamName;
