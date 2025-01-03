@@ -84,10 +84,30 @@ public class ScoreboardServiceTest {
         var uuid = scoreboardService.startGame("POL", "GER");
 
         scoreboardService.updateScore(uuid, 1, 0);
-        var updatedGame = scoreboardService.getGames().stream().filter(game -> game.getUuid().equals(uuid)).findFirst().orElseThrow();
+        var updatedGame = getGameByUUID(uuid);
 
         Assertions.assertEquals(1, updatedGame.getHomeTeamScore());
         Assertions.assertEquals(0, updatedGame.getAwayTeamScore());
+
+        scoreboardService.updateScore(uuid, 1, 1);
+        updatedGame = getGameByUUID(uuid);
+
+        Assertions.assertEquals(1, updatedGame.getHomeTeamScore());
+        Assertions.assertEquals(1, updatedGame.getAwayTeamScore());
+    }
+
+    @Test
+    void updateScoreShouldNotUpdateScoreIfScoreIsNegativeOrNull() {
+        var uuid = scoreboardService.startGame("POL", "GER");
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> scoreboardService.updateScore(uuid, -1, 0),
+                "Score can't be a negative number!");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> scoreboardService.updateScore(uuid, null, 0),
+                "Score can't be a negative number!");
+
+        var game = getGameByUUID(uuid);
+        Assertions.assertEquals(0, game.getHomeTeamScore());
+        Assertions.assertEquals(0, game.getAwayTeamScore());
     }
 
     @Test
@@ -102,5 +122,9 @@ public class ScoreboardServiceTest {
             Assertions.assertEquals(DEFAULT_SCORE, game.getHomeTeamScore());
             Assertions.assertEquals(DEFAULT_SCORE, game.getAwayTeamScore());
         });
+    }
+
+    private Game getGameByUUID(UUID uuid) {
+        return scoreboardService.getGames().stream().filter(game -> game.getUuid().equals(uuid)).findFirst().orElseThrow();
     }
 }

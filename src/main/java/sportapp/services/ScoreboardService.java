@@ -36,9 +36,8 @@ public class ScoreboardService implements ScoreboardOperations {
     public void updateScore(UUID gameUUID, Integer homeTeamScore, Integer awayTeamScore) {
         var gameToUpdate = games.stream()
                 .filter(game -> game.getUuid().equals(gameUUID))
-                .findFirst()
-                .orElseThrow();
-        gameToUpdate.updateScore(homeTeamScore, awayTeamScore);
+                .findFirst();
+        gameToUpdate.ifPresent(game -> game.updateScore(homeTeamScore, awayTeamScore));
     }
 
     @Override
