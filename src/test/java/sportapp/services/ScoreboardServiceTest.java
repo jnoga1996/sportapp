@@ -56,11 +56,27 @@ public class ScoreboardServiceTest {
 
     @Test
     void finishGameShouldRemoveGameFromScoreboard() {
-        var uuid = UUID.randomUUID();
+        var uuid = scoreboardService.startGame("POL", "GER");
+        var uuid2 = scoreboardService.startGame("USA", "SLO");
+        var notExistingUUID = UUID.randomUUID();
+        var games = scoreboardService.getGames();
+        Assertions.assertEquals(2, games.size());
 
         var result = scoreboardService.finishGame(uuid);
 
         Assertions.assertTrue(result);
+        Assertions.assertEquals(1, scoreboardService.getGames().size());
+
+        var result2 = scoreboardService.finishGame(notExistingUUID);
+
+        Assertions.assertFalse(result2);
+
+        var result3 = scoreboardService.finishGame(uuid2);
+        Assertions.assertTrue(result3);
+        Assertions.assertEquals(0, games.size());
+
+        var result4 = scoreboardService.finishGame(null);
+        Assertions.assertFalse(result4);
     }
 
     @Test

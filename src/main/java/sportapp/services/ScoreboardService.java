@@ -27,7 +27,9 @@ public class ScoreboardService implements ScoreboardOperations {
 
     @Override
     public boolean finishGame(UUID uuid) {
-        return false;
+        var gameToRemove = games.stream().filter(game -> game.getUuid().equals(uuid)).findFirst();
+        gameToRemove.ifPresent(games::remove);
+        return gameToRemove.isPresent();
     }
 
     @Override
