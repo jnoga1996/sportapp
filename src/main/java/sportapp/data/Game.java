@@ -12,6 +12,8 @@ public class Game {
     private final Team awayTeam;
 
     public Game(String homeTeamName, String awayTeamName) {
+        Objects.requireNonNull(homeTeamName, "Home team name can't be null!");
+        Objects.requireNonNull(awayTeamName, "Away team name can't be null!");
         this.homeTeam = new Team(homeTeamName, DEFAULT_SCORE);
         this.awayTeam = new Team(awayTeamName, DEFAULT_SCORE);
         this.uuid = UUID.randomUUID();

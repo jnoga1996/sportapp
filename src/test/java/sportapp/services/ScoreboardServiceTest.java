@@ -49,6 +49,12 @@ public class ScoreboardServiceTest {
     }
 
     @Test
+    void startGameShouldNotAddNewGameIfTeamIsNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> scoreboardService.startGame(null, "GER"), "Home team name can't be null!");
+        Assertions.assertThrows(NullPointerException.class, () -> scoreboardService.startGame("POL", null), "Away team name can't be null!");
+    }
+
+    @Test
     void finishGameShouldRemoveGameFromScoreboard() {
         var uuid = UUID.randomUUID();
 
