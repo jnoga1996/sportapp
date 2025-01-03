@@ -1,5 +1,6 @@
 package sportapp.util;
 
+import lombok.experimental.UtilityClass;
 import org.junit.jupiter.api.Assertions;
 import sportapp.data.Game;
 
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 import static sportapp.data.Game.DEFAULT_SCORE;
 
+@UtilityClass
 public class TestUtils {
 
     public static void assertThatGamesHaveDefaultScoreValue(List<Game> games) {

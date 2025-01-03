@@ -1,9 +1,11 @@
 package sportapp.services;
 
+import lombok.Getter;
 import sportapp.data.Game;
 
 import java.util.*;
 
+@Getter
 public class ScoreboardService implements ScoreboardOperations {
 
     private final List<Game> games;
@@ -54,7 +56,4 @@ public class ScoreboardService implements ScoreboardOperations {
                 .reversed();
     }
 
-    public List<Game> getGames() {
-        return games;
-    }
 }
