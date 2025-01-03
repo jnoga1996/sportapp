@@ -67,11 +67,4 @@ public class Game {
         }
         return true;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Game game = (Game) o;
-        return Objects.equals(homeTeamName, game.homeTeamName) && Objects.equals(awayTeamName, game.awayTeamName);
-    }
 }

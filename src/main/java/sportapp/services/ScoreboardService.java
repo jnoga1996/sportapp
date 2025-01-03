@@ -15,12 +15,20 @@ public class ScoreboardService implements ScoreboardOperations {
     @Override
     public UUID startGame(String homeTeamName, String awayTeamName) {
         Game game = new Game(homeTeamName, awayTeamName);
-        Game swappedGame = new Game(awayTeamName, homeTeamName);
-        if (games.contains(game) || games.contains(swappedGame)) {
+        if (gameExistsInScoreboard(game)) {
             throw new IllegalStateException("Game already exists in scoreboard!");
         }
         games.add(game);
         return game.getUuid();
+    }
+
+    private boolean gameExistsInScoreboard(Game game) {
+        return isTeamNameDuplicated(game.getHomeTeamName(), game.getAwayTeamName()) || isTeamNameDuplicated(game.getAwayTeamName(), game.getHomeTeamName());
+    }
+
+    private boolean isTeamNameDuplicated(String homeTeamName, String awayTeamName) {
+        return games.stream().anyMatch(g ->
+                Objects.equals(g.getHomeTeamName(), homeTeamName) && Objects.equals(g.getAwayTeamName(), awayTeamName));
     }
 
     @Override
