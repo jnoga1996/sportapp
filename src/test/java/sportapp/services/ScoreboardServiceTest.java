@@ -54,6 +54,18 @@ public class ScoreboardServiceTest {
     }
 
     @Test
+    void startGameShouldNotAddNewGameIfTeamIsAlreadyParticipatingInAnotherMatch() {
+        scoreboardService.startGame("POL", "USA");
+        Assertions.assertThrows(IllegalStateException.class, () -> scoreboardService.startGame("POL", "GER"), "Team POL is already participating in another match!");
+        Assertions.assertThrows(IllegalStateException.class, () -> scoreboardService.startGame("FRA", "USA"), "Team USA is already participating in another match!");
+    }
+
+    @Test
+    void startGameShouldNotAddNewGameIfHomeTeamEqualsAwayTeam() {
+        Assertions.assertThrows(IllegalStateException.class, () -> scoreboardService.startGame("POL", "POL"), "Game can't contain match with the same home team name and away team name: [POL]!");
+    }
+
+    @Test
     void finishGameShouldRemoveGameFromScoreboard() {
         var uuid = scoreboardService.startGame("POL", "GER");
         var uuid2 = scoreboardService.startGame("USA", "SLO");
@@ -132,6 +144,21 @@ public class ScoreboardServiceTest {
         assertThatGameHaveCorrectValues(summary.get(2), "MEX", 0, "CAN", 5);
         assertThatGameHaveCorrectValues(summary.get(3), "ARG", 3, "AUS", 1);
         assertThatGameHaveCorrectValues(summary.get(4), "GER", 2, "FRA", 2);
+    }
+
+    @Test
+    public void getSummaryByContinentShouldReturnContinentToScoreMapping() {
+        var uuid = scoreboardService.startGame("POL", "GER");
+        scoreboardService.updateScore(uuid, 2, 1);
+
+        var uuid2 = scoreboardService.startGame("RPA", "USA");
+        scoreboardService.updateScore(uuid2, 3, 2);
+
+        var summary = scoreboardService.getSummaryByContinent();
+        Assertions.assertNotNull(summary);
+        Assertions.assertEquals(3, summary.get("EUR"));
+        Assertions.assertEquals(3, summary.get("AFR"));
+        Assertions.assertEquals(2, summary.get("NA"));
     }
 
     @Test

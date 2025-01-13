@@ -3,6 +3,7 @@ package sportapp.services;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import sportapp.data.Game;
+import sportapp.validator.GameValidator;
 
 import java.util.*;
 
@@ -11,31 +12,21 @@ import java.util.*;
 public class ScoreboardService implements ScoreboardOperations {
 
     private final List<Game> games;
+    private final ContinentMapperService continentMapperService;
 
     public ScoreboardService() {
         games = new ArrayList<>();
+        continentMapperService = new ContinentMapperService();
     }
 
     @Override
     public UUID startGame(String homeTeamName, String awayTeamName) {
         Game game = new Game(homeTeamName, awayTeamName);
-        if (gameExistsInScoreboard(game)) {
-            String errorMessage = "Game [%s] already exists in scoreboard!".formatted(game);
-            log.warning(errorMessage);
-            throw new IllegalStateException(errorMessage);
-        }
+        GameValidator.validate(games, game);
         games.add(game);
         return game.getUuid();
     }
 
-    private boolean gameExistsInScoreboard(Game game) {
-        return isTeamNameDuplicated(game.getHomeTeamName(), game.getAwayTeamName()) || isTeamNameDuplicated(game.getAwayTeamName(), game.getHomeTeamName());
-    }
-
-    private boolean isTeamNameDuplicated(String homeTeamName, String awayTeamName) {
-        return games.stream().anyMatch(g ->
-                Objects.equals(g.getHomeTeamName(), homeTeamName) && Objects.equals(g.getAwayTeamName(), awayTeamName));
-    }
 
     @Override
     public boolean finishGame(UUID uuid) {
@@ -65,6 +56,23 @@ public class ScoreboardService implements ScoreboardOperations {
                 .sorted(Comparator.comparingInt(g -> g.getAwayTeamScore() + g.getHomeTeamScore()))
                 .toList()
                 .reversed();
+    }
+
+    @Override
+    public Map<String, Integer> getSummaryByContinent() {
+        Map<String, Integer> continentToScoreMap = new HashMap<>();
+        games.forEach(game -> {
+                    putIntoMap(continentToScoreMap, game.getHomeTeamName(), game.getHomeTeamScore());
+                    putIntoMap(continentToScoreMap, game.getAwayTeamName(), game.getAwayTeamScore());
+                }
+        );
+        return continentToScoreMap;
+    }
+
+    private void putIntoMap(Map<String, Integer> continentToScoreMap, String team, Integer score) {
+        String continentByCountry = continentMapperService.getContinentByCountry(team);
+            continentToScoreMap.compute(continentByCountry,
+                    (k, currentScore) -> score + Optional.ofNullable(currentScore).orElse(0));
     }
 
 }

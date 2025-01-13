@@ -3,6 +3,7 @@ package sportapp.services;
 import sportapp.data.Game;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface ScoreboardOperations {
@@ -14,4 +15,6 @@ public interface ScoreboardOperations {
     void updateScore(UUID gameUUID, Integer homeTeamScore, Integer awayTeamScore);
 
     List<Game> getSummaryByTotalScore();
+
+    Map<String, Integer> getSummaryByContinent();
 }
